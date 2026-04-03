@@ -1,7 +1,10 @@
 fastapi
+selenium
+numpy
 uvicorn
 pandas
 scikit-learn
 joblib
 pydantic
 gunicorn
+webdriver-manager
