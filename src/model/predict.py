@@ -10,7 +10,7 @@ model = joblib.load("models/model.pkl")
 with open("models/columns.json", "r") as f:
     feature_columns = json.load(f)
 
-scaler_df = pd.read_csv("models/scaler_info.csv", index_col=0)
+scaler_df = pd.read_csv("models/scaler_info.csv", index_col=0).to_dict(orient="index")
 
 
 def predict_single(data: dict):
