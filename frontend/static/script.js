@@ -200,15 +200,54 @@ document.querySelectorAll('input').forEach(input => {
   });
 });
 
-['area', 'walk', 'age', 'floor', 'total_floors'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', function(e) {
-        if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-            e.preventDefault();
-        }
-    });
-});
 
-document.getElementById('area').addEventListener('input', function() {
-    const match = this.value.match(/^\d*\.?\d{0,2}/);
-    this.value = match ? match[0] : '';
+function sanitizeDecimalInput(raw, maxDecimals = 2) {
+  let v = (raw ?? '').toString().normalize('NFKC');
+  v = v.replace(/[。．，,]/g, '.'); 
+  v = v.replace(/[^0-9.]/g, '');
+
+  const firstDot = v.indexOf('.');
+  if (firstDot !== -1) {
+    v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
+  }
+
+  const re = new RegExp(`^\\d*(?:\\.\\d{0,${maxDecimals}})?`);
+  const m = v.match(re);
+  return m ? m[0] : '';
+}
+
+function sanitizeIntegerInput(raw) {
+  let v = (raw ?? '').toString().normalize('NFKC');
+  v = v.replace(/[。．，,]/g, '.');
+  v = v.split('.')[0];
+  v = v.replace(/[^0-9]/g, '');
+  return v;
+}
+
+
+const areaEl = document.getElementById('area');
+if (areaEl) {
+  areaEl.addEventListener('input', function () {
+    this.value = sanitizeDecimalInput(this.value, 2);
+  });
+  areaEl.addEventListener('keydown', function (e) {
+
+    if (['e', 'E', '-', '+'].includes(e.key)) e.preventDefault();
+  });
+}
+
+
+['walk', 'age', 'floor', 'total_floors'].forEach((id) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.addEventListener('keydown', (e) => {
+    if (['.', ',', '。', '．', 'e', 'E', '-', '+'].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
+
+  el.addEventListener('input', function () {
+    this.value = sanitizeIntegerInput(this.value);
+  });
 });
