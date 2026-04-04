@@ -1,10 +1,16 @@
 fastapi
-selenium
-numpy
 uvicorn
+pydantic
+jinja2
+python-multipart
+
+numpy
 pandas
 scikit-learn
 joblib
-pydantic
-gunicorn
+
+selenium
 webdriver-manager
+
+# Linux deploy only (optional on Windows)
+gunicorn
